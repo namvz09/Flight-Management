@@ -1,0 +1,63 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+
+    <div class="container mt-4">
+        <h1 class="mb-4" style="text-align: center">Đánh giá chuyến bay</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5> Mã chuyến bay: {{ flight_schedule.id }}</h5>
+                <h5> Chuyến bay:
+                    {% set airports = {1: 'Tân Sơn Nhất (SGN)', 2: 'Nội Bài (HAN)', 3: 'Côn Đảo (VCS)', 4: 'Cà Mau (CAH)', 5: 'Cần Thơ (VCA)', 6: 'Phú Bài (HUI)', 7: 'Vân Đồn (VDO)', 8: 'Đà Nẵng (DAD)', 9: 'Phú Quốc (PQC)', 10: 'Vinh (VII)'} %}
+                    {{ airports[flight_schedule.airport_from] }} → {{ airports[flight_schedule.airport_to] }}
+                </h5>
+                <h5>Ngày bay: {{ flight_schedule.time_start }}</h5>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="/flight_schedule/{{ flight_schedule.id }}/comments">
+                    <div class="form-group">
+                        <textarea class="form-control" name="content" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Thêm bình luận</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="comments" class="mt-2">
+            {% for c in comments %}
+            <div class="row alert alert-info">
+                <div class="col-md-1 col-xs-4">
+                    <img src="{{ url_for('static', filename='img/meme.jpg') }}" class="img-fluid rounded" width="40"/>
+                </div>
+                <div class="col-md-11 col-xs-8">
+                    <p><strong>{{c.content}}</strong></p>
+                    <p>Bình luận lúc: <span class="date">{{ c.created_at }}</span></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"></script>
+
+    <script>
+        window.onload = function() {
+            let dates = document.getElementsByClassName("date");
+            for (let d of dates)
+                d.innerText = moment(d.innerText).locale("vi").fromNow()
+        }
+    </script>
+
+{% block footer %}
+    <footer>
+    </footer>
+{% endblock %}
+{% endblock %}

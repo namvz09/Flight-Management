@@ -1,0 +1,61 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+{% for t in t_list_json %}
+<div class="row">
+
+</div>
+<table class="table mt-4" style="border: 1px solid #ccc;">
+    <thead>
+    <tr>
+        <th scope="col" class="text-center" colspan="2">VÉ CHUYẾN BAY</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>CHUYẾN BAY: <span class="fw-bold">{{ t['flight_sche_id']['airport_from']['name'] }}  →  {{ t['flight_sche_id']['airport_to']['name'] }}</span>
+        </td>
+        <td>HÀNH KHÁCH: <span class="fw-bold">{{ t['customer_name'] }}</span></td>
+    </tr>
+    <tr>
+        <td>CMND/CCCD: <span class="fw-bold">{{ t['customer_id'] }}</span></td>
+        <td>ĐIỆN THOẠI: <span class="fw-bold">{{ t['customer_phone'] }}</span></td>
+    </tr>
+    <tr>
+        <td>HẠNG VÉ: <span class="fw-bold">Vé hạng {{ t['ticket_type'] }}</span></td>
+        <td>GIÁ TIỀN: <span class="fw-bold">{{ "{:,.0f}".format(t['ticket_price']) }} VND</span></td>
+    </tr>
+    <tr>
+        <td colspan="2">THỜI GIAN ĐẶT VÉ: <span class="fw-bold">{{ moment(t['created_at'], local=True).format('LLLL') }}</span></td>
+    </tr>
+    </tbody>
+</table>
+    <div class="ticket-div" style="text-align: center; margin-top: 10px;">
+        <button type="submit" class="btn btn-outline-primary" onclick="printTicket('{{ t.id }}')">Xuất vé</button>
+        <button type="submit" class="btn btn-outline-primary">
+            <a class="nav-link" href="/flight_schedule/{{ t['flight_sche_id']['id'] }}/comments">Đánh giá chuyến bay</a>
+        </button>
+    </div>
+<script>
+function printTicket(ticketId) {
+    var printContent = document.createElement('div');
+    var table = document.querySelectorAll('.table')[ticketId - 1]; // Lấy table tương ứng với ticketId
+    printContent.appendChild(table.cloneNode(true)); // Thêm nội dung của table vào printContent
+
+    var printWindow = window.open('', '', '');
+    printWindow.document.write('<html><head><title>Vé Chuyến Bay</title>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent.innerHTML); // In nội dung của printContent
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+</script>
+{% endfor %}
+
+{% block footer %}
+<footer>
+</footer>
+{% endblock %}
+
+{% endblock %}
